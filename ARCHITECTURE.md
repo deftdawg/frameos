@@ -19,7 +19,7 @@ The current FrameOS system is composed of three main components: a frontend UI, 
 ```mermaid
 graph TD
     subgraph User's Browser
-        A[Frontend UI]
+        A["Frontend UI"]
     end
 
     subgraph Control Server (Docker)
@@ -29,10 +29,10 @@ graph TD
 
     subgraph Edge Node (Raspberry Pi)
         D["FrameOS (Nim Application)"]
-        E[SSH Server]
-        F[Web Server (for previews)]
-        G[Display Driver]
-        H[Physical Display]
+        E["SSH Server"]
+        F["Web Server (for previews)"]
+        G["Display Driver"]
+        H["Physical Display"]
     end
 
     User -- Interacts --> A
@@ -55,22 +55,22 @@ sequenceDiagram
     participant User
     participant Frontend
     participant Backend
-    participant Frame (Edge Node)
+    participant "Frame (Edge Node)"
 
-    User->>Frontend: Designs scene and clicks "Deploy"
-    Frontend->>Backend: POST /api/deploy (with scene JSON)
-    Backend->>Backend: Enqueue deploy task
-    Note over Backend: Scene JSON is used to generate Nim source code.
-    Backend->>Backend: Create build archive (.tar.gz)
-    Backend->>Frame: Connect via SSH
-    Backend->>Frame: Upload build archive
-    Backend->>Frame: Execute `tar` to extract archive
-    Backend->>Frame: Execute `make` to compile Nim code
-    Note over Frame: Nim code is compiled into a native binary on the device.
-    Frame-->>Backend: Compilation complete
-    Backend->>Frame: Update symlinks to new release
-    Backend->>Frame: Restart `frameos` service
-    Frame->>Frame: New `frameos` binary executes the scene logic
+    User->>Frontend: "Designs scene and clicks ""Deploy"""
+    Frontend->>Backend: "POST /api/deploy (with scene JSON)"
+    Backend->>Backend: "Enqueue deploy task"
+    Note over Backend: "Scene JSON is used to generate Nim source code."
+    Backend->>Backend: "Create build archive (.tar.gz)"
+    Backend->>"Frame (Edge Node)": "Connect via SSH"
+    Backend->>"Frame (Edge Node)": "Upload build archive"
+    Backend->>"Frame (Edge Node)": "Execute `tar` to extract archive"
+    Backend->>"Frame (Edge Node)": "Execute `make` to compile Nim code"
+    Note over "Frame (Edge Node)": "Nim code is compiled into a native binary on the device."
+    "Frame (Edge Node)"-->>Backend: "Compilation complete"
+    Backend->>"Frame (Edge Node)": "Update symlinks to new release"
+    Backend->>"Frame (Edge Node)": "Restart `frameos` service"
+    "Frame (Edge Node)"->>"Frame (Edge Node)": "New `frameos` binary executes the scene logic"
 ```
 
 #### Rendering Sequence Diagram
@@ -79,21 +79,21 @@ This diagram shows how a frame renders a scene and displays it.
 
 ```mermaid
 sequenceDiagram
-    participant Runner (FrameOS)
-    participant Scene Logic (Compiled)
-    participant Display Driver
-    participant UI (for Preview)
+    participant "Runner (FrameOS)"
+    participant "Scene Logic (Compiled)"
+    participant "Display Driver"
+    participant "UI (for Preview)"
 
     loop Render Loop
-        Runner->>Scene Logic: Execute render()
-        Scene Logic-->>Runner: Return rendered image (pixie.Image)
-        Runner->>Display Driver: render(image)
-        Note over Runner: Last image is cached for previews.
-        Runner->>Runner: Sleep for refresh interval
+        "Runner (FrameOS)"->>"Scene Logic (Compiled)": "Execute render()"
+        "Scene Logic (Compiled)"-->>"Runner (FrameOS)": "Return rendered image (pixie.Image)"
+        "Runner (FrameOS)"->>"Display Driver": "render(image)"
+        Note over "Runner (FrameOS)": "Last image is cached for previews."
+        "Runner (FrameOS)"->>"Runner (FrameOS)": "Sleep for refresh interval"
     end
 
-    UI->>Runner: HTTP GET /image
-    Runner-->>UI: Respond with last rendered image (PNG)
+    "UI (for Preview)"->>"Runner (FrameOS)": "HTTP GET /image"
+    "Runner (FrameOS)"-->>"UI (for Preview)": "Respond with last rendered image (PNG)"
 ```
 
 ## 2. Proposed Architecture for NeoFrame Development
@@ -144,20 +144,20 @@ To match the existing `refreshInterval` functionality, a scheduler will be added
 ```mermaid
 graph TD
     subgraph User's Browser
-        A[Frontend UI]
+        A["Frontend UI"]
     end
 
     subgraph Control Server (Docker)
-        B[Backend API <br/>(Python/FastAPI)]
-        C[Code Generator <br/>(scene_nim.py)]
+        B["Backend API (Python/FastAPI)"]
+        C["Code Generator (scene_nim.py)"]
         I["Nim Rendering Engine (Command-line tool)"]
         J["Scheduler (APScheduler)"]
     end
 
     subgraph Edge Node (NeoFrame - ESP32)
-        K[Web Server (for upload)]
-        L[Display Driver]
-        M[Physical Display]
+        K["Web Server (for upload)"]
+        L["Display Driver"]
+        M["Physical Display"]
     end
 
     User -- Interacts --> A
@@ -178,21 +178,21 @@ sequenceDiagram
     participant User
     participant Frontend
     participant Backend
-    participant NeoFrame (ESP32)
+    participant "NeoFrame (ESP32)"
 
-    User->>Frontend: Designs scene for NeoFrame device
-    Frontend->>Backend: POST /api/save_scene (with scene JSON and refresh interval)
-    Backend->>Backend: Schedule recurring job (via APScheduler)
+    User->>Frontend: "Designs scene for NeoFrame device"
+    Frontend->>Backend: "POST /api/save_scene (with scene JSON and refresh interval)"
+    Backend->>Backend: "Schedule recurring job (via APScheduler)"
 
     loop Every refresh interval
-        Backend->>Backend: Job triggered by Scheduler
-        Note over Backend: Generates Nim source for the scene.
-        Backend->>Backend: Execute Nim rendering engine (CLI tool)
-        Note over Backend: The Nim tool renders the scene to an image file.
-        Backend-->>Backend: Image file created
-        Backend->>NeoFrame: HTTP POST /upload (with image data)
-        NeoFrame-->>Backend: 200 OK
-        NeoFrame->>NeoFrame: Display new image
+        Backend->>Backend: "Job triggered by Scheduler"
+        Note over Backend: "Generates Nim source for the scene."
+        Backend->>Backend: "Execute Nim rendering engine (CLI tool)"
+        Note over Backend: "The Nim tool renders the scene to an image file."
+        Backend-->>Backend: "Image file created"
+        Backend->>"NeoFrame (ESP32)": "HTTP POST /upload (with image data)"
+        "NeoFrame (ESP32)"-->>Backend: "200 OK"
+        "NeoFrame (ESP32)"->>"NeoFrame (ESP32)": "Display new image"
     end
 ```
 
