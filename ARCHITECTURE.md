@@ -151,7 +151,7 @@ graph TD
         B[Backend API <br/>(Python/FastAPI)]
         C[Code Generator <br/>(scene_nim.py)]
         I["Nim Rendering Engine (Command-line tool)"]
-        J[Scheduler (APScheduler)]
+        J["Scheduler (APScheduler)"]
     end
 
     subgraph Edge Node (NeoFrame - ESP32)
