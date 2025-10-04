@@ -22,12 +22,12 @@ graph TD
         A["Frontend UI"]
     end
 
-    subgraph Control Server (Docker)
+    subgraph "Control Server (Docker)"
         B["Backend API (Python/FastAPI)"]
         C["Code Generator (scene_nim.py)"]
     end
 
-    subgraph Edge Node (Raspberry Pi)
+    subgraph "Edge Node (Raspberry Pi)"
         D["FrameOS (Nim Application)"]
         E["SSH Server"]
         F["Web Server (for previews)"]
@@ -143,18 +143,18 @@ To match the existing `refreshInterval` functionality, a scheduler will be added
 
 ```mermaid
 graph TD
-    subgraph User's Browser
+    subgraph "User's Browser"
         A["Frontend UI"]
     end
 
-    subgraph Control Server (Docker)
+    subgraph "Control Server (Docker)"
         B["Backend API (Python/FastAPI)"]
         C["Code Generator (scene_nim.py)"]
         I["Nim Rendering Engine (Command-line tool)"]
         J["Scheduler (APScheduler)"]
     end
 
-    subgraph Edge Node (NeoFrame - ESP32)
+    subgraph "Edge Node (NeoFrame - ESP32)"
         K["Web Server (for upload)"]
         L["Display Driver"]
         M["Physical Display"]
