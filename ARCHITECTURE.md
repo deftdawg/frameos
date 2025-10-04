@@ -23,12 +23,12 @@ graph TD
     end
 
     subgraph Control Server (Docker)
-        B["Backend API <br/>(Python/FastAPI)"]
-        C["Code Generator <br/>(scene_nim.py)"]
+        B["Backend API (Python/FastAPI)"]
+        C["Code Generator (scene_nim.py)"]
     end
 
     subgraph Edge Node (Raspberry Pi)
-        D["FrameOS <br/>(Nim Application)"]
+        D["FrameOS (Nim Application)"]
         E[SSH Server]
         F[Web Server (for previews)]
         G[Display Driver]
@@ -150,7 +150,7 @@ graph TD
     subgraph Control Server (Docker)
         B[Backend API <br/>(Python/FastAPI)]
         C[Code Generator <br/>(scene_nim.py)]
-        I["Nim Rendering Engine <br/>(Command-line tool)"]
+        I["Nim Rendering Engine (Command-line tool)"]
         J[Scheduler (APScheduler)]
     end
 
